@@ -129,10 +129,14 @@ class ExtendedAlgo:
         return self
 
 
-def algo(a, b):
+def algo(a: int, b: int):
+    """
+    Расчитать целочисленную линейную комбинацию расширенным алгоритмом Евклида
+    """
     ext_algo = ExtendedAlgo(a, b).calc()
     print(ext_algo)
 
 
 if __name__ == "__main__":
     algo(176, 13)
+    #print(ExtendedAlgo(176, 13).calc())
