@@ -30,11 +30,12 @@ class ExtendedAlgo:
     Расширенный алгоритм Евклида
     нахождение наибольшего общего делителя целых чисел и их коэффициентов
     """
-    def __init__(self, a: int = 0, b: int = 0):
+    def __init__(self, a: int = 0, b: int = 0, output: str = ""):
         if a < 0 or b < 0:
             raise ValueError("Аргумены a и b должны быть больше 0!")
         self.a, self.b = (a, b) if a >= b else (b, a)  # целые числа a >= b > 0
         self.steps: [StepCoef] = []
+        self.output = output.upper()
 
     def __str__(self):
         if self.steps:
@@ -42,8 +43,18 @@ class ExtendedAlgo:
             df = pd.DataFrame(json.loads(json_data))
             df.sort_values("step", ascending=True, inplace=True)
             result = "Расширенный алгоритм Евклида (расчет целочисленной линейной комбинации ax + by = d)"
-            result += f"\n{tabulate(df, headers=["","a","r","x","y","a","b","x2","x1","y2","y1"], tablefmt='rounded_grid', showindex=False)}"
             if self.d:
+                columns = ["","q","r","x","y","a","b","x2","x1","y2","y1"]
+                drop_columns = []
+                if self.output == "X":
+                    drop_columns = ["y","y2","y1"]
+                elif self.output == "Y":
+                    drop_columns = ["x","x2","x1"]
+                if drop_columns:
+                    df = df.drop(columns=drop_columns)
+                    for col in drop_columns:
+                        columns.remove(col)
+                result += f"\n{tabulate(df, headers=columns, tablefmt='rounded_grid', showindex=False)}"
                 x, y, d = self.x, self.y, self.d
                 result += f"\nРезультат расчета:   xa + yb = {x}·{self.a} {'+' if y > 0 else '-'} {y.__abs__()}·{self.b} = НОД({self.a},{self.b}) = {d}"
                 result += f"\nИскомые значения:   x = {x}, y = {y}, d = {d}"
@@ -129,14 +140,14 @@ class ExtendedAlgo:
         return self
 
 
-def algo(a: int, b: int):
+def algo(a: int, b: int, output: str = ""):
     """
     Расчитать целочисленную линейную комбинацию расширенным алгоритмом Евклида
     """
-    ext_algo = ExtendedAlgo(a, b).calc()
+    ext_algo = ExtendedAlgo(a, b, output).calc()
     print(ext_algo)
 
 
 if __name__ == "__main__":
-    algo(176, 13)
+    algo(2577, 1137, "Y")
     #print(ExtendedAlgo(176, 13).calc())
